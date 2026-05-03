@@ -1,20 +1,51 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
+import { toast } from "sonner";
 import { Section, FadeIn } from "./Section";
-import { Mail, Phone, Send } from "lucide-react";
+import { Mail, Phone, Send, Loader2 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 
-export function Contact() {
-  const [sent, setSent] = useState(false);
+const EMAILJS_SERVICE_ID = "service_sur6zqk";
+const EMAILJS_TEMPLATE_ID = "template_zoidw7i";
+const EMAILJS_PUBLIC_KEY = "uxyofyvZwOxUspKe8";
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+export function Contact() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const data = new FormData(form);
-    const subject = encodeURIComponent(`Portfolio inquiry from ${data.get("name")}`);
-    const body = encodeURIComponent(`${data.get("message")}\n\n— ${data.get("name")} (${data.get("email")})`);
-    window.location.href = `mailto:mmoiz9259@gmail.com?subject=${subject}&body=${body}`;
-    setSent(true);
-    form.reset();
+    setIsSubmitting(true);
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+        EMAILJS_PUBLIC_KEY,
+      );
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch {
+      toast.error("Failed to send message. Try again!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -34,8 +65,8 @@ export function Contact() {
             <ContactRow icon={Phone} label="+92 312 1158240" href="tel:+923121158240" />
             <ContactRow
               icon={LinkedinIcon}
-              label="linkedin.com/in/muhammad-moiz"
-              href="https://linkedin.com/in/muhammad-moiz"
+              label="linkedin.com/in/m-moiz"
+              href="https://www.linkedin.com/in/m-moiz-a4a378258"
             />
             <ContactRow icon={GithubIcon} label="GitHub" href="https://github.com/" />
           </ul>
@@ -46,14 +77,17 @@ export function Contact() {
             onSubmit={onSubmit}
             className="rounded-xl border border-border bg-card p-6 space-y-4"
           >
-            <Field label="Name" name="name" required />
-            <Field label="Email" name="email" type="email" required />
+            <Field label="Name" name="name" value={formData.name} onChange={onChange} required />
+            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} required />
+            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} required />
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                 Message
               </label>
               <textarea
                 name="message"
+                value={formData.message}
+                onChange={onChange}
                 required
                 rows={5}
                 className="w-full rounded-md bg-background border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none"
@@ -61,14 +95,21 @@ export function Contact() {
             </div>
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-md font-medium text-sm hover:opacity-90 transition-all hover:-translate-y-0.5"
+              disabled={isSubmitting}
+              className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-md font-medium text-sm hover:opacity-90 transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
             >
-              <Send className="w-4 h-4" />
-              Send Message
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Sending…
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  Send Message
+                </>
+              )}
             </button>
-            {sent && (
-              <p className="text-xs text-primary text-center">Opening your mail app…</p>
-            )}
           </form>
         </FadeIn>
       </div>
@@ -107,11 +148,15 @@ function Field({
   name,
   type = "text",
   required,
+  value,
+  onChange,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <div>
@@ -122,6 +167,8 @@ function Field({
         name={name}
         type={type}
         required={required}
+        value={value}
+        onChange={onChange}
         className="w-full rounded-md bg-background border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
       />
     </div>
