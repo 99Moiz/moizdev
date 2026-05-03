@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Mail, Github, Linkedin } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 
 export function Hero() {
   const scrollTo = (id: string) =>
@@ -87,7 +88,7 @@ export function Hero() {
               className="hover:text-primary transition-colors"
               aria-label="LinkedIn"
             >
-              <Linkedin className="w-5 h-5" />
+              <LinkedinIcon className="w-5 h-5" />
             </a>
             <a
               href="https://github.com/"
@@ -96,7 +97,7 @@ export function Hero() {
               className="hover:text-primary transition-colors"
               aria-label="GitHub"
             >
-              <Github className="w-5 h-5" />
+              <GithubIcon className="w-5 h-5" />
             </a>
             <a
               href="mailto:mmoiz9259@gmail.com"

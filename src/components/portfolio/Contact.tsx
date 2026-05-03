@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Section, FadeIn } from "./Section";
-import { Mail, Linkedin, Github, Phone, Send } from "lucide-react";
+import { Mail, Phone, Send } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 
 export function Contact() {
   const [sent, setSent] = useState(false);
