@@ -196,16 +196,16 @@ function Field({
   label,
   name,
   type = "text",
-  required,
   value,
   onChange,
+  error,
 }: {
   label: string;
   name: string;
   type?: string;
-  required?: boolean;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  error?: string;
 }) {
   return (
     <div>
@@ -215,11 +215,12 @@ function Field({
       <input
         name={name}
         type={type}
-        required={required}
         value={value}
         onChange={onChange}
-        className="w-full rounded-md bg-background border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
+        aria-invalid={!!error}
+        className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 ${error ? "border-destructive" : "border-input"}`}
       />
+      {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
     </div>
   );
 }
