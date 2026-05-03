@@ -81,7 +81,7 @@ function ContactRow({
   label,
   href,
 }: {
-  icon: typeof Mail;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   href: string;
 }) {
