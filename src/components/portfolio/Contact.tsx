@@ -33,11 +33,11 @@ export function Contact() {
             />
             <ContactRow icon={Phone} label="+92 312 1158240" href="tel:+923121158240" />
             <ContactRow
-              icon={Linkedin}
+              icon={LinkedinIcon}
               label="linkedin.com/in/muhammad-moiz"
               href="https://linkedin.com/in/muhammad-moiz"
             />
-            <ContactRow icon={Github} label="GitHub" href="https://github.com/" />
+            <ContactRow icon={GithubIcon} label="GitHub" href="https://github.com/" />
           </ul>
         </FadeIn>
 
