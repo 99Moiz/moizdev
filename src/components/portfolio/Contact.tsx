@@ -123,9 +123,9 @@ export function Contact() {
             onSubmit={onSubmit}
             className="rounded-xl border border-border bg-card p-6 space-y-4"
           >
-            <Field label="Name" name="name" value={formData.name} onChange={onChange} required />
-            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} required />
-            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} required />
+            <Field label="Name" name="name" value={formData.name} onChange={onChange} error={errors.name} />
+            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} error={errors.email} />
+            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} error={errors.subject} />
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                 Message
@@ -134,10 +134,13 @@ export function Contact() {
                 name="message"
                 value={formData.message}
                 onChange={onChange}
-                required
                 rows={5}
-                className="w-full rounded-md bg-background border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none"
+                aria-invalid={!!errors.message}
+                className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none ${errors.message ? "border-destructive" : "border-input"}`}
               />
+              {errors.message && (
+                <p className="mt-1 text-xs text-destructive">{errors.message}</p>
+              )}
             </div>
             <button
               type="submit"
