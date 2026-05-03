@@ -1,6 +1,7 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { toast } from "sonner";
+import { z } from "zod";
 import { Section, FadeIn } from "./Section";
 import { Mail, Phone, Send, Loader2 } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
@@ -8,6 +9,31 @@ import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 const EMAILJS_SERVICE_ID = "service_sur6zqk";
 const EMAILJS_TEMPLATE_ID = "template_zoidw7i";
 const EMAILJS_PUBLIC_KEY = "uxyofyvZwOxUspKe8";
+
+const contactSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name must be less than 100 characters"),
+  email: z
+    .string()
+    .trim()
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters"),
+  subject: z
+    .string()
+    .trim()
+    .min(3, "Subject must be at least 3 characters")
+    .max(150, "Subject must be less than 150 characters"),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Message must be at least 10 characters")
+    .max(2000, "Message must be less than 2000 characters"),
+});
+
+type FieldName = "name" | "email" | "subject" | "message";
 
 export function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,25 +43,44 @@ export function Contact() {
     subject: "",
     message: "",
   });
+  const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
 
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (errors[name as FieldName]) {
+      setErrors({ ...errors, [name]: undefined });
+    }
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const result = contactSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Partial<Record<FieldName, string>> = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0] as FieldName;
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form.");
+      return;
+    }
+
+    setErrors({});
     setIsSubmitting(true);
     try {
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
         {
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
+          from_name: result.data.name,
+          from_email: result.data.email,
+          subject: result.data.subject,
+          message: result.data.message,
         },
         EMAILJS_PUBLIC_KEY,
       );
@@ -47,6 +92,7 @@ export function Contact() {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <Section id="contact" eyebrow="05 — Contact" title="Let's work together">
@@ -77,9 +123,9 @@ export function Contact() {
             onSubmit={onSubmit}
             className="rounded-xl border border-border bg-card p-6 space-y-4"
           >
-            <Field label="Name" name="name" value={formData.name} onChange={onChange} required />
-            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} required />
-            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} required />
+            <Field label="Name" name="name" value={formData.name} onChange={onChange} error={errors.name} />
+            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} error={errors.email} />
+            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} error={errors.subject} />
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                 Message
@@ -88,10 +134,13 @@ export function Contact() {
                 name="message"
                 value={formData.message}
                 onChange={onChange}
-                required
                 rows={5}
-                className="w-full rounded-md bg-background border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none"
+                aria-invalid={!!errors.message}
+                className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none ${errors.message ? "border-destructive" : "border-input"}`}
               />
+              {errors.message && (
+                <p className="mt-1 text-xs text-destructive">{errors.message}</p>
+              )}
             </div>
             <button
               type="submit"
@@ -147,16 +196,16 @@ function Field({
   label,
   name,
   type = "text",
-  required,
   value,
   onChange,
+  error,
 }: {
   label: string;
   name: string;
   type?: string;
-  required?: boolean;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  error?: string;
 }) {
   return (
     <div>
@@ -166,11 +215,12 @@ function Field({
       <input
         name={name}
         type={type}
-        required={required}
         value={value}
         onChange={onChange}
-        className="w-full rounded-md bg-background border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
+        aria-invalid={!!error}
+        className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 ${error ? "border-destructive" : "border-input"}`}
       />
+      {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
     </div>
   );
 }
