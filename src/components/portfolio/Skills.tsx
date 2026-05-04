@@ -1,4 +1,5 @@
 import { Section, FadeIn } from "./Section";
+import { Tilt3D } from "./Tilt3D";
 import { Server, Database, Monitor, Wrench } from "lucide-react";
 
 const groups = [
