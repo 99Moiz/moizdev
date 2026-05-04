@@ -1,4 +1,5 @@
 import { Section, FadeIn } from "./Section";
+import { Tilt3D } from "./Tilt3D";
 import { Code2, Database, Layers, Rocket } from "lucide-react";
 
 const highlights = [
