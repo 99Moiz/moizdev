@@ -116,16 +116,24 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="hidden md:block"
         >
-          <div className="relative aspect-square rounded-2xl border border-border bg-card p-6 shadow-sm">
-            <div className="flex items-center gap-1.5 mb-4">
-              <span className="w-3 h-3 rounded-full bg-destructive/60" />
-              <span className="w-3 h-3 rounded-full bg-chart-4/60" />
-              <span className="w-3 h-3 rounded-full bg-chart-2/60" />
-              <span className="ml-2 text-xs font-mono text-muted-foreground">
-                developer.cs
-              </span>
-            </div>
-            <pre className="font-mono text-xs leading-relaxed text-foreground/90 overflow-hidden">
+          <Tilt3D max={10} className="relative">
+            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-primary/20 via-chart-3/10 to-transparent blur-xl -z-10" />
+            <div
+              className="relative aspect-square rounded-2xl border border-border grain-card p-6 shadow-xl shadow-primary/5"
+              style={{ transform: "translateZ(40px)" }}
+            >
+              <div className="flex items-center gap-1.5 mb-4">
+                <span className="w-3 h-3 rounded-full bg-destructive/60" />
+                <span className="w-3 h-3 rounded-full bg-chart-4/60" />
+                <span className="w-3 h-3 rounded-full bg-chart-2/60" />
+                <span className="ml-2 text-xs font-mono text-muted-foreground">
+                  developer.cs
+                </span>
+              </div>
+              <pre
+                className="font-mono text-xs leading-relaxed text-foreground/90 overflow-hidden"
+                style={{ transform: "translateZ(30px)" }}
+              >
 {`public class Developer
 {
   public string Name => "Muhammad Moiz";
@@ -137,8 +145,15 @@ export function Hero() {
   };
   public bool OpenToWork => true;
 }`}
-            </pre>
-          </div>
+              </pre>
+              <div
+                className="absolute -bottom-4 -right-4 w-20 h-20 rounded-2xl border border-border bg-card flex items-center justify-center text-primary font-mono text-2xl font-bold float-y shadow-lg"
+                style={{ transform: "translateZ(60px)" }}
+              >
+                {"<>"}
+              </div>
+            </div>
+          </Tilt3D>
         </motion.div>
       </div>
     </section>
