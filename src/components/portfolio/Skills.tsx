@@ -47,24 +47,29 @@ export function Skills() {
       <div className="grid sm:grid-cols-2 gap-5">
         {groups.map((g, i) => (
           <FadeIn key={g.title} delay={i * 0.05}>
-            <div className="h-full rounded-xl border border-border bg-card p-6 hover:border-primary/40 hover:shadow-md transition-all">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <g.icon className="w-5 h-5" />
-                </div>
-                <h3 className="font-semibold">{g.title}</h3>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {g.items.map((it) => (
-                  <span
-                    key={it}
-                    className="text-xs font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-md border border-border"
+            <Tilt3D max={6} scale={1.01} className="h-full">
+              <div className="h-full rounded-xl border border-border grain-card p-6 hover:border-primary/40 hover:shadow-lg transition-all">
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center"
+                    style={{ transform: "translateZ(25px)" }}
                   >
-                    {it}
-                  </span>
-                ))}
+                    <g.icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold">{g.title}</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {g.items.map((it) => (
+                    <span
+                      key={it}
+                      className="text-xs font-medium bg-secondary text-secondary-foreground px-2.5 py-1 rounded-md border border-border hover:border-primary/40 hover:text-primary transition-colors"
+                    >
+                      {it}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            </Tilt3D>
           </FadeIn>
         ))}
       </div>
