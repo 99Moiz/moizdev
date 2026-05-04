@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "./SocialIcons";
+import { Tilt3D } from "./Tilt3D";
 
 export function Hero() {
   const scrollTo = (id: string) =>
