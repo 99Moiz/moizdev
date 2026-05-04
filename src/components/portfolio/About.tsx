@@ -1,4 +1,5 @@
 import { Section, FadeIn } from "./Section";
+import { Tilt3D } from "./Tilt3D";
 import { Code2, Database, Layers, Rocket } from "lucide-react";
 
 const highlights = [
@@ -36,13 +37,22 @@ export function About() {
         <FadeIn delay={0.1}>
           <div className="grid grid-cols-2 gap-3">
             {highlights.map((h) => (
-              <div
-                key={h.label}
-                className="rounded-xl border border-border bg-card p-4 hover:border-primary/40 hover:-translate-y-0.5 transition-all"
-              >
-                <h.icon className="w-5 h-5 text-primary mb-3" />
-                <p className="text-sm font-medium">{h.label}</p>
-              </div>
+              <Tilt3D key={h.label} max={12} scale={1.04}>
+                <div className="rounded-xl border border-border grain-card p-4 hover:border-primary/40 transition-all shadow-sm hover:shadow-md">
+                  <div
+                    className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3"
+                    style={{ transform: "translateZ(20px)" }}
+                  >
+                    <h.icon className="w-5 h-5" />
+                  </div>
+                  <p
+                    className="text-sm font-medium"
+                    style={{ transform: "translateZ(15px)" }}
+                  >
+                    {h.label}
+                  </p>
+                </div>
+              </Tilt3D>
             ))}
           </div>
         </FadeIn>
