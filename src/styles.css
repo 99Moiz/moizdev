@@ -152,9 +152,40 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(
+        circle at 1px 1px,
+        color-mix(in oklab, var(--foreground) 6%, transparent) 1px,
+        transparent 0
+      );
+    background-size: 28px 28px;
   }
 
   ::selection {
     background-color: color-mix(in oklab, var(--primary) 25%, transparent);
+  }
+}
+
+@layer utilities {
+  .grain-card {
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--card) 92%, var(--primary) 8%) 0%,
+        var(--card) 60%
+      );
+  }
+
+  .float-y {
+    animation: float-y 6s ease-in-out infinite;
+  }
+
+  @keyframes float-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .spin-slow {
+    animation: spin 14s linear infinite;
   }
 }
