@@ -121,11 +121,12 @@ export function Contact() {
         <FadeIn delay={0.1}>
           <form
             onSubmit={onSubmit}
-            className="rounded-xl border border-border bg-card p-6 space-y-4"
+            className="relative rounded-xl border border-border grain-card p-6 space-y-4 shadow-lg shadow-primary/5"
           >
-            <Field label="Name" name="name" value={formData.name} onChange={onChange} error={errors.name} />
-            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} error={errors.email} />
-            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} error={errors.subject} />
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-primary/10 via-transparent to-chart-3/10 blur-xl -z-10" />
+            <Field label="Name" name="name" value={formData.name} onChange={onChange} error={errors.name} disabled={isSubmitting} />
+            <Field label="Email" name="email" type="email" value={formData.email} onChange={onChange} error={errors.email} disabled={isSubmitting} />
+            <Field label="Subject" name="subject" value={formData.subject} onChange={onChange} error={errors.subject} disabled={isSubmitting} />
             <div>
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                 Message
@@ -135,8 +136,9 @@ export function Contact() {
                 value={formData.message}
                 onChange={onChange}
                 rows={5}
+                disabled={isSubmitting}
                 aria-invalid={!!errors.message}
-                className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none ${errors.message ? "border-destructive" : "border-input"}`}
+                className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${errors.message ? "border-destructive" : "border-input"}`}
               />
               {errors.message && (
                 <p className="mt-1 text-xs text-destructive">{errors.message}</p>
@@ -145,12 +147,18 @@ export function Contact() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-md font-medium text-sm hover:opacity-90 transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
+              aria-busy={isSubmitting}
+              aria-disabled={isSubmitting}
+              className="relative w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 rounded-md font-medium text-sm overflow-hidden transition-all hover:opacity-95 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:opacity-70"
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Sending…
+                  <span>Sending your message…</span>
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary-foreground/30 overflow-hidden">
+                    <span className="block h-full w-1/3 bg-primary-foreground/80 animate-[loader-bar_1.2s_ease-in-out_infinite]" />
+                  </span>
+                  <style>{`@keyframes loader-bar{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}`}</style>
                 </>
               ) : (
                 <>
