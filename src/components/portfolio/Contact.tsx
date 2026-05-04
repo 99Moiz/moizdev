@@ -207,6 +207,7 @@ function Field({
   value,
   onChange,
   error,
+  disabled,
 }: {
   label: string;
   name: string;
@@ -214,6 +215,7 @@ function Field({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   error?: string;
+  disabled?: boolean;
 }) {
   return (
     <div>
@@ -225,8 +227,9 @@ function Field({
         type={type}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         aria-invalid={!!error}
-        className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 ${error ? "border-destructive" : "border-input"}`}
+        className={`w-full rounded-md bg-background border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40 transition-colors disabled:opacity-60 disabled:cursor-not-allowed ${error ? "border-destructive" : "border-input"}`}
       />
       {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
     </div>
