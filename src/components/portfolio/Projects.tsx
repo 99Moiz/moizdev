@@ -1,4 +1,5 @@
 import { Section, FadeIn } from "./Section";
+import { Tilt3D } from "./Tilt3D";
 import { ExternalLink, ArrowUpRight } from "lucide-react";
 
 const projects = [
