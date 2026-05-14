@@ -8,6 +8,7 @@ import { GithubIcon, LinkedinIcon } from "./SocialIcons";
 
 const EMAILJS_SERVICE_ID = "service_sur6zqk";
 const EMAILJS_TEMPLATE_ID = "template_zoidw7i";
+const EMAILJS_AUTOREPLY_TEMPLATE_ID = "template_ujtg9zg";
 const EMAILJS_PUBLIC_KEY = "uxyofyvZwOxUspKe8";
 
 const contactSchema = z.object({
@@ -73,18 +74,36 @@ export function Contact() {
     setErrors({});
     setIsSubmitting(true);
     try {
+      const templateParams = {
+        from_name: result.data.name,
+        from_email: result.data.email,
+        to_email: result.data.email,
+        name: result.data.name,
+        email: result.data.email,
+        subject: result.data.subject,
+        message: result.data.message,
+      };
+
       await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        {
-          from_name: result.data.name,
-          from_email: result.data.email,
-          subject: result.data.subject,
-          message: result.data.message,
-        },
+        templateParams,
         EMAILJS_PUBLIC_KEY,
       );
-      toast.success("Message sent successfully!");
+
+      // Auto-reply to the sender (non-blocking for UX success state)
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_AUTOREPLY_TEMPLATE_ID,
+          templateParams,
+          EMAILJS_PUBLIC_KEY,
+        );
+      } catch (err) {
+        console.error("Auto-reply failed:", err);
+      }
+
+      toast.success("Message sent! Check your inbox for a confirmation.");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch {
       toast.error("Failed to send message. Try again!");
