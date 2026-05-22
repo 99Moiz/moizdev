@@ -30,6 +30,17 @@ const roles = [
       "Collaborated with cross-functional teams to deliver scalable features and enhancements for enterprise clients.",
     ],
   },
+  {
+    role: ".NET Developer Intern",
+    company: "Out2Sol",
+    location: "Karachi, Pakistan",
+    period: "Apr 2025 — Jun 2025",
+    bullets: [
+      "Optimized SQL queries and API endpoints for measurable performance gains.",
+      "Diagnosed and resolved production bugs to ensure system stability.",
+      "Contributed feature enhancements in a live enterprise environment.",
+    ],
+  },
 ];
 
 export function Experience() {
